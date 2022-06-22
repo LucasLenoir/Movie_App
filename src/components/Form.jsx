@@ -92,7 +92,7 @@ const Form = () => {
         </div>
       </div>
       <div className="result">
-        {moviesData.slice(0, 12).map((movie) => (
+        {moviesData.slice(0, 100).map((movie) => (
           <Card key={movie.id} props={movie} />
         ))}
       </div>
