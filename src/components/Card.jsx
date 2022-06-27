@@ -1,8 +1,25 @@
 import React from "react";
 
-const Card = ({ props }) => {
+const Card = ({ props, setMovieId }) => {
+  const addStorage = () => {
+    let storedData = window.localStorage.movies
+      ? window.localStorage.movies.split(",")
+      : [];
 
+    if (!storedData.includes(props.id.toString())) {
+      storedData.push(props.id);
+      window.localStorage.movies = storedData;
+    }
+  };
+  const deleteStorage = (id) => {
+    let storedData = window.localStorage.movies
+      ? window.localStorage.movies.split(",")
+      : [];
 
+    let arrayStoredData = storedData.filter((Data) => Data !== id.toString());
+    setMovieId(arrayStoredData);
+    window.localStorage.movies = arrayStoredData.join();
+  };
   return (
     <div className="card">
       <img
@@ -20,6 +37,12 @@ const Card = ({ props }) => {
       </h4>
       <h3>{props.results ? props.results : props.cast}</h3>
       <p>{props.overview}</p>
+      <div
+        className="btn"
+        onClick={(e) => (setMovieId ? deleteStorage(props.id) : addStorage())}
+      >
+        {setMovieId ? "Remove" : "Add to Favs"}
+      </div>
     </div>
   );
 };

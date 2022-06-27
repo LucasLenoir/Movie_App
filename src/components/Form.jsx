@@ -5,7 +5,7 @@ import Card from "./Card";
 const Form = () => {
   const [moviesData, setMoviesData] = useState([]);
   const [search, setSearch] = useState("");
-  // const [searchArtist, setSearchArtist] = useState("");
+  const [sortGoodBad, setSortGoodBad] = useState(null);
 
   useEffect(() => {
     axios
@@ -23,47 +23,24 @@ const Form = () => {
         )
         .then((res) => {
           setMoviesData([]);
-          console.log(res.data.results);
+
           if (res.data.results) {
             res.data.results.forEach((movie) => {
               movie.media_type !== "person"
-                ? setMoviesData((movies) => {
-                    const clone = movies;
-                    clone.push(movie);
-                    return clone;
-                  })
+                ? setMoviesData((movies) => [...movies, movie])
                 : axios
                     .get(
                       `https://api.themoviedb.org/3/person/${movie.id}/movie_credits?api_key=06aed854c0bb71522c688e9d7119e01a`
                     )
                     .then((res) => {
-                      setMoviesData((movies) => {
-                        const clone = movies;
-                        clone.push(...res.data.cast);
-                        return clone;
-                      });
+                      setMoviesData((movies) => [...movies, ...res.data.cast]);
                     });
             });
           }
         });
     }
   }, [search]);
-  // useEffect(() => {
-  //   if (searchArtist !== "") {
-  //     axios
-  //       .get(
-  //         `https://api.themoviedb.org/3/search/person?api_key=06aed854c0bb71522c688e9d7119e01a&query=${searchArtist}`
-  //       )
-  //       .then((res) => res.data.results[0].id)
-  //       .then((id) => {
-  //         axios
-  //           .get(
-  //             `https://api.themoviedb.org/3/person/${id}/movie_credits?api_key=06aed854c0bb71522c688e9d7119e01a`
-  //           )
-  //           .then((res) => setMoviesData(res.data.cast));
-  //       });
-  //   }
-  // }, [searchArtist]);
+
   return (
     <div className="form-component">
       <div className="form-container">
@@ -75,23 +52,20 @@ const Form = () => {
             autoCorrect="off"
             onChange={(e) => setSearch(e.target.value)}
           />
-          {/* <input type="submit" value="Research" /> */}
         </form>
-        <form>
-          {/* <input
-              type="text"
-              placeholder="Enter an actor name"
-              id="search-input"
-              onChange={(e) => setSearchArtist(e.target.value)}
-            /> */}
-          {/* <input type="submit" value="Research" /> */}
-        </form>
-
         <div className="btn-sort-container">
-          <div className="btn-sort" id="goodToBad">
+          <div
+            className="btn-sort"
+            id="goodToBad"
+            onClick={() => setSortGoodBad("goodToBad")}
+          >
             Top <span>&#10141;</span>
           </div>
-          <div className="btn-sort" id="badToGood">
+          <div
+            className="btn-sort"
+            id="badToGood"
+            onClick={() => setSortGoodBad("badToGood")}
+          >
             Bottom<span>&#10141;</span>
           </div>
         </div>
@@ -100,6 +74,13 @@ const Form = () => {
         {moviesData
           .sort((a, b) => a.id - b.id)
           .slice(0, 100)
+          .sort((a, b) => {
+            if (sortGoodBad === "goodToBad") {
+              return b.vote_average - a.vote_average;
+            } else if (sortGoodBad === "badToGood") {
+              return a.vote_average - b.vote_average;
+            }
+          })
           .map((movie, index) => {
             if (movie.id !== moviesData[index + 1]?.id) {
               return <Card key={index} props={movie} />;
