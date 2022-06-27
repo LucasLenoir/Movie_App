@@ -22,8 +22,8 @@ const Form = () => {
           `https://api.themoviedb.org/3/search/multi?api_key=06aed854c0bb71522c688e9d7119e01a&query=${search}`
         )
         .then((res) => {
-          console.log(res);
           setMoviesData([]);
+          console.log(res.data.results);
           if (res.data.results) {
             res.data.results.forEach((movie) => {
               movie.media_type !== "person"
@@ -37,7 +37,11 @@ const Form = () => {
                       `https://api.themoviedb.org/3/person/${movie.id}/movie_credits?api_key=06aed854c0bb71522c688e9d7119e01a`
                     )
                     .then((res) => {
-                      setMoviesData(res.data.cast);
+                      setMoviesData((movies) => {
+                        const clone = movies;
+                        clone.push(...res.data.cast);
+                        return clone;
+                      });
                     });
             });
           }
@@ -68,6 +72,7 @@ const Form = () => {
             type="text"
             placeholder="Enter a movie name"
             id="search-input"
+            autoCorrect="off"
             onChange={(e) => setSearch(e.target.value)}
           />
           {/* <input type="submit" value="Research" /> */}
@@ -92,9 +97,14 @@ const Form = () => {
         </div>
       </div>
       <div className="result">
-        {moviesData.slice(0, 100).map((movie) => (
-          <Card key={movie.id} props={movie} />
-        ))}
+        {moviesData
+          .sort((a, b) => a.id - b.id)
+          .slice(0, 100)
+          .map((movie, index) => {
+            if (movie.id !== moviesData[index + 1]?.id) {
+              return <Card key={index} props={movie} />;
+            }
+          })}
       </div>
     </div>
   );
