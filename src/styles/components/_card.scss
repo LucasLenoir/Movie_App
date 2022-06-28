@@ -85,7 +85,23 @@
       display: none;
     }
   }
-  .btn {
+
+  #favs{
+  background: center/contain url("../../assets/icones/BookmarkEmpty.png") no-repeat;
+  position: absolute;
+  top: 16px;
+  width:20px;
+  height: 20px;
+  user-select: none;
+  cursor: pointer;
+
+  &.active{
+    background: center/contain url("../../assets/icones/BookmarkFilled.png") no-repeat;
+  
+  }
+
+  }
+  #trailer{
     background: #546fe4;
     position: absolute;
     bottom: 16px;

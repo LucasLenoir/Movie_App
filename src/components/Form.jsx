@@ -1,11 +1,14 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Card from "./Card";
+import Iframe from "./Iframe";
 
 const Form = () => {
   const [moviesData, setMoviesData] = useState([]);
   const [search, setSearch] = useState("");
   const [sortGoodBad, setSortGoodBad] = useState(null);
+  const [keyVideo, setKeyVideo] = useState("");
+  const [active, setActive] = useState(false);
 
   useEffect(() => {
     axios
@@ -42,52 +45,62 @@ const Form = () => {
   }, [search]);
 
   return (
-    <div className="form-component">
-      <div className="form-container">
-        <form>
-          <input
-            type="text"
-            placeholder="Enter a movie name"
-            id="search-input"
-            autoCorrect="off"
-            onChange={(e) => setSearch(e.target.value)}
-          />
-        </form>
-        <div className="btn-sort-container">
-          <div
-            className="btn-sort"
-            id="goodToBad"
-            onClick={() => setSortGoodBad("goodToBad")}
-          >
-            Top <span>&#10141;</span>
-          </div>
-          <div
-            className="btn-sort"
-            id="badToGood"
-            onClick={() => setSortGoodBad("badToGood")}
-          >
-            Bottom<span>&#10141;</span>
+    <>
+      <Iframe keyVideo={keyVideo} setActive={setActive} active={active} />
+      <div className="form-component">
+        <div className="form-container">
+          <form>
+            <input
+              type="text"
+              placeholder="Enter a movie or an Actor name"
+              id="search-input"
+              autoCorrect="off"
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </form>
+          <div className="btn-sort-container">
+            <div
+              className="btn-sort"
+              id="goodToBad"
+              onClick={() => setSortGoodBad("goodToBad")}
+            >
+              Top <span>&#10141;</span>
+            </div>
+            <div
+              className="btn-sort"
+              id="badToGood"
+              onClick={() => setSortGoodBad("badToGood")}
+            >
+              Bottom<span>&#10141;</span>
+            </div>
           </div>
         </div>
+        <div className="result">
+          {moviesData
+            .sort((a, b) => a.id - b.id)
+            .slice(0, 100)
+            .sort((a, b) => {
+              if (sortGoodBad === "goodToBad") {
+                return b.vote_average - a.vote_average;
+              } else if (sortGoodBad === "badToGood") {
+                return a.vote_average - b.vote_average;
+              }
+            })
+            .map((movie, index) => {
+              if (movie.id !== moviesData[index + 1]?.id) {
+                return (
+                  <Card
+                    key={index}
+                    props={movie}
+                    setKeyVideo={setKeyVideo}
+                    setActive={setActive}
+                  />
+                );
+              }
+            })}
+        </div>
       </div>
-      <div className="result">
-        {moviesData
-          .sort((a, b) => a.id - b.id)
-          .slice(0, 100)
-          .sort((a, b) => {
-            if (sortGoodBad === "goodToBad") {
-              return b.vote_average - a.vote_average;
-            } else if (sortGoodBad === "badToGood") {
-              return a.vote_average - b.vote_average;
-            }
-          })
-          .map((movie, index) => {
-            if (movie.id !== moviesData[index + 1]?.id) {
-              return <Card key={index} props={movie} />;
-            }
-          })}
-      </div>
-    </div>
+    </>
   );
 };
 

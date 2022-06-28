@@ -1,10 +1,12 @@
-import React from "react";
+import axios from "axios";
+import React, { useState, useEffect } from "react";
 
-const Card = ({ props, setMovieId }) => {
+const Card = ({ props, setMovieId, setKeyVideo, setActive }) => {
   const addStorage = () => {
     let storedData = window.localStorage.movies
       ? window.localStorage.movies.split(",")
       : [];
+    setFav(true);
 
     if (!storedData.includes(props.id.toString())) {
       storedData.push(props.id);
@@ -15,13 +17,33 @@ const Card = ({ props, setMovieId }) => {
     let storedData = window.localStorage.movies
       ? window.localStorage.movies.split(",")
       : [];
+    setFav(false);
 
     let arrayStoredData = storedData.filter((Data) => Data !== id.toString());
-    setMovieId(arrayStoredData);
+    setMovieId ? setMovieId(arrayStoredData) : "";
     window.localStorage.movies = arrayStoredData.join();
   };
+  const [fav, setFav] = useState(false);
+  useEffect(() => {
+    let storedData = window.localStorage.movies
+      ? window.localStorage.movies.split(",")
+      : [];
+
+    storedData.forEach((d) => {
+      if (d === props.id.toString()) {
+        setFav(true);
+      }
+    });
+  }, []);
+
   return (
     <div className="card">
+      <div
+        className={fav ? "active" : ""}
+        id="favs"
+        onClick={(e) => (fav ? deleteStorage(props.id) : addStorage())}
+      ></div>
+
       <img
         src={
           props.poster_path
@@ -39,9 +61,24 @@ const Card = ({ props, setMovieId }) => {
       <p>{props.overview}</p>
       <div
         className="btn"
-        onClick={(e) => (setMovieId ? deleteStorage(props.id) : addStorage())}
+        id="trailer"
+        onClick={() => {
+          axios
+            .get(
+              `https://api.themoviedb.org/3/movie/${props.id}?api_key=06aed854c0bb71522c688e9d7119e01a&append_to_response=videos`
+            )
+            .then((res) => {
+              console.log(res.data.videos.results);
+              const teaser = res.data.videos.results.filter((r) => {
+                return r.type === "Teaser" || "Trailer";
+              })[0];
+
+              setKeyVideo(teaser.key);
+              setActive(true);
+            });
+        }}
       >
-        {setMovieId ? "Remove" : "Add to Favs"}
+        Watch Trailer
       </div>
     </div>
   );
