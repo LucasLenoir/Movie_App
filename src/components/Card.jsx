@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 
 const Card = ({ props, setMovieId, setKeyVideo, setActive }) => {
-  console.log(props);
+ 
   const addStorage = () => {
     let storedData = window.localStorage.movies
       ? window.localStorage.movies.split(",")
@@ -69,7 +69,7 @@ const Card = ({ props, setMovieId, setKeyVideo, setActive }) => {
               `https://api.themoviedb.org/3/movie/${props.id}?api_key=06aed854c0bb71522c688e9d7119e01a&append_to_response=videos`
             )
             .then((res) => {
-              console.log(res.data.videos.results);
+              
               const teaser = res.data.videos.results.filter((r) => {
                 return r.type === "Teaser" || "Trailer";
               })[0];

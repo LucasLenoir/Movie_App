@@ -39,7 +39,7 @@ const Category = () => {
 
   const loadAnotherPage = (e) => {
     setIndex((index) => index + 1);
-    console.log(index);
+
     if (index === 6) {
       axios
         .get(
