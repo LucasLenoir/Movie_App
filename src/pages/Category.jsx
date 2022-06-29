@@ -23,7 +23,7 @@ const Category = () => {
 
     axios
       .get(
-        `https://api.themoviedb.org/3/discover/movie/?api_key=06aed854c0bb71522c688e9d7119e01a&with_genres=${id}
+        `http://api.themoviedb.org/3/discover/movie/?api_key=06aed854c0bb71522c688e9d7119e01a&with_genres=${id}
     `
       )
       .then((res) => setResult(res.data.results));
