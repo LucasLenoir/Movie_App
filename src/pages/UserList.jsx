@@ -2,10 +2,14 @@ import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import axios from "axios";
 import Card from "../components/Card";
+import Form from "../components/Form";
+import Iframe from "../components/Iframe";
 
 const UserList = () => {
   const [movieIdList, setMovieList] = useState([]);
   const [moviesId, setMoviesId] = useState([]);
+  const [keyVideo, setKeyVideo] = useState("");
+  const [active, setActive] = useState(false);
   useEffect(() => {
     setMoviesId(
       window.localStorage.movies ? window.localStorage.movies.split(",") : []
@@ -13,7 +17,7 @@ const UserList = () => {
   }, []);
 
   useEffect(() => {
-    setMovieList([])
+    setMovieList([]);
     for (let i = 0; i < moviesId.length; i++) {
       axios
         .get(
@@ -27,11 +31,20 @@ const UserList = () => {
     <div className="user-list-page">
       <Header />
       <h2>Watch List</h2>
+      <Iframe keyVideo={keyVideo} setActive={setActive} active={active} />
       <div className="result">
         {movieIdList.map((movie, index) => {
-          return <Card key={index} props={movie} setMovieId={setMoviesId} />;
+          return (
+            <Card
+              key={index}
+              props={movie}
+              setActive={setActive}
+              setMovieId={setMoviesId}
+              setKeyVideo={setKeyVideo}
+            />
+          );
         })}
-      </div>
+      </div>{" "}
     </div>
   );
 };

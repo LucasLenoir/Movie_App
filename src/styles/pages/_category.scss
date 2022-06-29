@@ -1,0 +1,75 @@
+
+
+
+
+.btn-sort-container {
+    margin: 8px auto;
+    width: 220px;
+    display: flex;
+    justify-content: space-around;
+    cursor: pointer;
+    
+  }
+  #goodToBadCat {
+    border-radius: 10px 0 0 10px;
+  }
+  #badToGoodCat {
+    border-radius: 0 10px 10px 0;
+  }
+  #goodToBadCat,
+  #badToGoodCat {
+    background: $color-1;
+    width: 110px;
+    transition: 0.3s;
+    position: relative;
+    text-align: center;
+
+    &:hover {
+      background: $black;
+    }
+  }
+  #goodToBadCat span {
+    transform: translateY(-50%) rotate(-90deg);
+    right: 18px;
+  }
+  #badToGoodCat span {
+    transform: translateY(-50%) rotate(90deg);
+    left: 16px;
+  }
+  #goodToBadCat span,
+  #badToGoodCat span {
+    position: absolute;
+    top: 50%;
+  }
+  .btn-cat{
+    margin:3px;
+    border-radius: 10px;
+    background: $color-1;
+    width: 110px;
+    transition: 0.3s;
+    position: relative;
+    text-align: center;
+    cursor: pointer;
+    color: #fff;
+    border: none;
+    
+    &:hover {
+        background: $black;
+      }
+    &.active{
+        background: $black;
+    }
+
+  }
+  .btn-cat-container{
+margin-left: 10%;
+display: flex;
+flex-direction: row;
+justify-content: space-around;
+flex-wrap: wrap;
+width: 80%;
+
+  }
+  .result{
+    overflow-y: scroll;
+  }

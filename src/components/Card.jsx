@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 
 const Card = ({ props, setMovieId, setKeyVideo, setActive }) => {
+  console.log(props);
   const addStorage = () => {
     let storedData = window.localStorage.movies
       ? window.localStorage.movies.split(",")

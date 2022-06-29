@@ -17,6 +17,12 @@ const Header = () => {
           >
             <li>Favs</li>
           </NavLink>
+          <NavLink
+            to="/category"
+            className={(nav) => (nav.isActive ? "nav-active" : "")}
+          >
+            <li>Category</li>
+          </NavLink>
         </ul>
       </nav>
       <h1>// Watch me now</h1>
