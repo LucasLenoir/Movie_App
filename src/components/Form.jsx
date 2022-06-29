@@ -52,7 +52,7 @@ const Form = () => {
           <form>
             <input
               type="text"
-              placeholder="Enter a movie or an Actor name"
+              placeholder="Enter a movie or an Actor "
               id="search-input"
               autoCorrect="off"
               onChange={(e) => setSearch(e.target.value)}
