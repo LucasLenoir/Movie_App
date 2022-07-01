@@ -9,6 +9,40 @@ const Form = () => {
   const [sortGoodBad, setSortGoodBad] = useState(null);
   const [keyVideo, setKeyVideo] = useState("");
   const [active, setActive] = useState(false);
+  const [index, setIndex] = useState(0);
+  const [page, setPage] = useState(2);
+
+  const loadAnotherPage = (e) => {
+    setIndex((index) => index + 1);
+
+    if (index === 6) {
+      search !== ""
+        ? axios
+            .get(
+              `https://api.themoviedb.org/3/search/multi?api_key=06aed854c0bb71522c688e9d7119e01a&query=${search}&page=${page}`
+            )
+            .then((res) => {
+              if (res.data.results) {
+                res.data.results.forEach((movie) => {
+                  movie.media_type !== "person"
+                    ? setMoviesData((movies) => [...movies, movie])
+                    : null;
+                });
+              }
+            })
+            .then(setIndex(0))
+        : axios
+            .get(
+              `https://api.themoviedb.org/3/movie/popular?api_key=06aed854c0bb71522c688e9d7119e01a&page=${page}`
+            )
+            .then((res) =>
+              setMoviesData((result) => [...result, ...res.data.results])
+            )
+            .then(setIndex(0));
+
+      setPage((page) => page + 1);
+    }
+  };
 
   useEffect(() => {
     axios
@@ -33,7 +67,7 @@ const Form = () => {
                 ? setMoviesData((movies) => [...movies, movie])
                 : axios
                     .get(
-                      `https://api.themoviedb.org/3/person/${movie.id}/movie_credits?api_key=06aed854c0bb71522c688e9d7119e01a`
+                      `https://api.themoviedb.org/3/person/${movie.id}/combined_credits?api_key=06aed854c0bb71522c688e9d7119e01a`
                     )
                     .then((res) => {
                       setMoviesData((movies) => [...movies, ...res.data.cast]);
@@ -75,10 +109,13 @@ const Form = () => {
             </div>
           </div>
         </div>
-        <div className="result">
+        <div
+          className="result"
+          onWheel={loadAnotherPage}
+          onTouchMove={loadAnotherPage}
+        >
           {moviesData
             .sort((a, b) => a.id - b.id)
-            .slice(0, 100)
             .sort((a, b) => {
               if (sortGoodBad === "goodToBad") {
                 return b.vote_average - a.vote_average;
