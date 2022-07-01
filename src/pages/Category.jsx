@@ -87,7 +87,12 @@ const Category = () => {
             );
           })}
         </div>
-        <div className="result" ref={ref} onWheel={loadAnotherPage}>
+        <div
+          className="result"
+          ref={ref}
+          onWheel={loadAnotherPage}
+          onTouchMove={loadAnotherPage}
+        >
           {result
             .sort((a, b) => {
               if (sortGoodBad === "goodToBad") {
